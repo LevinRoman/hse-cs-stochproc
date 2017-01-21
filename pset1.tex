@@ -1,0 +1,125 @@
+% !TEX encoding = UTF-8 Unicode
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[intlimits]{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage[russian,english]{babel}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\graphicspath{{Pictures/}}
+
+\renewcommand{\labelenumi}{(\alph{enumi})} % Use letters for enumerate
+% \DeclareMathOperator{\Sample}{Sample}
+\let\vaccent=\v % rename builtin command \v{} to \vaccent{}
+\usepackage{enumerate}
+\renewcommand{\v}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}} 
+% for vectors of Greek letters
+\newcommand{\uv}[1]{\ensuremath{\mathbf{\hat{#1}}}} % for unit vector
+\newcommand{\abs}[1]{\left| #1 \right|} % for absolute value
+\newcommand{\avg}[1]{\left< #1 \right>} % for average
+\let\underdot=\d % rename builtin command \d{} to \underdot{}
+\renewcommand{\d}[2]{\frac{d #1}{d #2}} % for derivatives
+\newcommand{\dd}[2]{\frac{d^2 #1}{d #2^2}} % for double derivatives
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} 
+% for partial derivatives
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}} 
+% for double partial derivatives
+\newcommand{\pdc}[3]{\left( \frac{\partial #1}{\partial #2}
+ \right)_{#3}} % for thermodynamic partial derivatives
+\newcommand{\ket}[1]{\left| #1 \right>} % for Dirac bras
+\newcommand{\bra}[1]{\left< #1 \right|} % for Dirac kets
+\newcommand{\braket}[2]{\left< #1 \vphantom{#2} \right|
+ \left. #2 \vphantom{#1} \right>} % for Dirac brackets
+\newcommand{\matrixel}[3]{\left< #1 \vphantom{#2#3} \right|
+ #2 \left| #3 \vphantom{#1#2} \right>} % for Dirac matrix elements
+\newcommand{\grad}[1]{\gv{\nabla} #1} % for gradient
+\let\divsymb=\div % rename builtin command \div to \divsymb
+\renewcommand{\div}[1]{\gv{\nabla} \cdot \v{#1}} % for divergence
+\newcommand{\curl}[1]{\gv{\nabla} \times \v{#1}} % for curl
+\let\baraccent=\= % rename builtin command \= to \baraccent
+\renewcommand{\=}[1]{\stackrel{#1}{=}} % for putting numbers above =
+\providecommand{\wave}[1]{\v{\tilde{#1}}}
+\providecommand{\fr}{\frac}
+\providecommand{\RR}{\mathbb{R}}
+\providecommand{\NN}{\mathbb{N}}
+\providecommand{\seq}{\subseteq}
+\providecommand{\e}{\varepsilon}
+
+
+\begin{document}
+
+{\noindent\Large\bf  \\[0.5\baselineskip] {\fontfamily{cmr}\selectfont  Домашнее задание I. Теория случайных процессов}         }\\[2\baselineskip] % Title
+{ {\bf \fontfamily{cmr}\selectfont Вероятностные модели и статистика случайных процессов}\\
+\vspace{0.3cm}
+\\
+{\textit{\fontfamily{cmr}\selectfont     \today}}}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    {\large \textsc{}} % Author name
+\\[1.4\baselineskip]
+\textbf{Дедлайн:} 2 февраля, 23:59\vspace{0.3cm}\\ 
+\textbf{Указания:} Домашнее задание необходимо отправить до дедлайна на почту hse.cs.stochastics@gmail.com с темой "Домашнее задание 1. ФИО студента" в едином файле формата .pdf. Дедлайн жесткий и отправки после дедлайна оцениваться не будут.
+\vspace{1cm} \\
+Напомним, что вектор $X= (X_1, \dots, X_n)$ называется гауссовским, если для любого набора коэффициентов $(\lambda_1, \dots, \lambda_n) \in \mathbb{R}^n$ случайная величина $Y \stackrel{\text{def}}{=} \sum_{k=1}^n \lambda_k Y_k$ имеет нормальное распределение. 
+\par Напомним определение Винеровского процесса: процесс $W_t$ называется Винеровским (или броуновским движением), если 
+\begin{itemize}
+    \item $W_0 = 0 \,\,\, \mathbb{P}$- п.н.
+    \item $W_t$ имеет независимые приращения $\forall t$.
+    \item $W_t - W_s \sim \mathcal{N}(0, t- s) \,\,\, \forall t > s \ge 0$.
+\end{itemize}
+
+\section{Гауссовские случайные процессы}
+\textbf{Задача 1.1.} Какие из следующих ковариационных функций валидны (могут быть ковариационной функцией случайного процесса)?. Ответ обосновать.
+\begin{align}
+    R_1(t, s) = \min\{t, s\} - ts \qquad R_2(t, s) = \min\{t, s\} - t(s + 1)
+\end{align}
+\textbf{Задача 1.2.} Докажите эквивалентность следующих утверждений: \\
+(i) Характеристическая функция вектора $X$ выглядит таким образом 
+\begin{align}
+    \varphi_X(\mathbf{u}) = \exp\left\{i \mathbf{u}^T \cdot \mu - \frac 1 2 \mathbf{u}^T \Sigma \mathbf{u} \right\},
+\end{align}
+где $\mu \in \mathbb{R}^n$ и $\Sigma$ симметричная неотрицательно определённая квадратная матрица размера $n \times n$. \\
+(ii) Вектор $X$ представим в виде 
+\begin{align}
+    X = A X^{\circ} + \mu,
+\end{align}
+где $\mu \in \mathbb{R}^n$, $A \in \mathbb{M}_n(\mathbb{R})$, а $X^{\circ} \in \mathbb{R}^n$ --- стандартный нормальный вектор, т.е. все компоненты этого вектора независимы в совокупности и распределены по закону $\mathcal{N}(0, 1)$.   
+\\
+\textbf{Задача 1.3.} Рассмотрим следующую вариацию определения Винеровского процесса. 
+\par Винеровский процесс (броуновское движение) - это гауссовский процесс $W_t$ с математическим ожиданием $m(t) = 0$ и кова- риационной функцией $R(s, t) = min\{s, t\}$. 
+\par Докажите эквивалентность этих двух определений. 
+\\
+\textbf{Задача 1.4.} Найдите 
+\begin{enumerate}
+    \item 
+    \begin{align}
+        \lim_{n \to \infty} \sum_{i=1}^n \left(W_{t_i} - W_{t_{i-1}}\right)^2 
+    \end{align}
+    \item
+    \begin{align}
+         \lim_{n \to \infty} \sum_{i=1}^n \left|W_{t_i} - W_{t_{i-1}}\right|
+    \end{align}
+    для Винеровского процесса на отрезке $[0, t]$:
+\end{enumerate}
+\textbf{Задача 1.5.} Пусть $N_t$ - неоднородный процесс Пуассона с интенсивностью $\lambda(t)$. Докажите, что 
+\begin{itemize}
+    \item функция $\Lambda(t) = \int_{0}^t \lambda(s) \, ds$ имеет обратную. 
+    \item процесс $M_t = N_{\Lambda^{-1}(t)}$ является однородным Пуассоновским процессом. 
+\end{itemize}
+\section{Эксперимент}
+
+\textbf{Задача 1.6.} Написать программу, которая генерирует реализации фрактального броуновского движения, с помощью вычисления стохастического интеграла по броуновскому движению
+\\
+\end{document}
