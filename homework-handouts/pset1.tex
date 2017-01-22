@@ -1,0 +1,421 @@
+% !TEX encoding = UTF-8 Unicode
+\documentclass[a4paper,14pt]{extreport}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage[T2A]{fontenc}
+\usepackage[intlimits]{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{indentfirst}
+\usepackage{fullpage}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage[english,russian]{babel}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\graphicspath{{Pictures/}}
+
+\linespread{1.33}                    % Полуторный интвервал (ГОСТ Р 7.0.11-2011, 5.3.6)
+% \Large
+
+
+% \renewcommand{\labelenumi}{(\alph{enumi})} % Use letters for enumerate
+% \DeclareMathOperator{\Sample}{Sample}
+\let\vaccent=\v % rename builtin command \v{} to \vaccent{}
+\usepackage{enumerate}
+\renewcommand{\v}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}} 
+% for vectors of Greek letters
+\newcommand{\uv}[1]{\ensuremath{\mathbf{\hat{#1}}}} % for unit vector
+\newcommand{\abs}[1]{\left| #1 \right|} % for absolute value
+\newcommand{\avg}[1]{\left< #1 \right>} % for average
+\let\underdot=\d % rename builtin command \d{} to \underdot{}
+\renewcommand{\d}[2]{\frac{d #1}{d #2}} % for derivatives
+\newcommand{\dd}[2]{\frac{d^2 #1}{d #2^2}} % for double derivatives
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} 
+% for partial derivatives
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}} 
+% for double partial derivatives
+\newcommand{\pdc}[3]{\left( \frac{\partial #1}{\partial #2}
+ \right)_{#3}} % for thermodynamic partial derivatives
+\newcommand{\ket}[1]{\left| #1 \right>} % for Dirac bras
+\newcommand{\bra}[1]{\left< #1 \right|} % for Dirac kets
+\newcommand{\braket}[2]{\left< #1 \vphantom{#2} \right|
+ \left. #2 \vphantom{#1} \right>} % for Dirac brackets
+\newcommand{\matrixel}[3]{\left< #1 \vphantom{#2#3} \right|
+ #2 \left| #3 \vphantom{#1#2} \right>} % for Dirac matrix elements
+\newcommand{\grad}[1]{\gv{\nabla} #1} % for gradient
+\let\divsymb=\div % rename builtin command \div to \divsymb
+\renewcommand{\div}[1]{\gv{\nabla} \cdot \v{#1}} % for divergence
+\newcommand{\curl}[1]{\gv{\nabla} \times \v{#1}} % for curl
+\let\baraccent=\= % rename builtin command \= to \baraccent
+\renewcommand{\=}[1]{\stackrel{#1}{=}} % for putting numbers above =
+\providecommand{\wave}[1]{\v{\tilde{#1}}}
+\providecommand{\fr}{\frac}
+\providecommand{\RR}{\mathbb{R}}
+\providecommand{\NN}{\mathbb{N}}
+\providecommand{\seq}{\subseteq}
+\providecommand{\e}{\varepsilon}
+
+% LaTeX internal stuff
+\newcommand{\innermid}{\nonscript\;\delimsize\vert\nonscript\;}
+\newcommand{\activatebar}{%
+  \begingroup\lccode`\~=`\|
+  \lowercase{\endgroup\let~}\innermid 
+  \mathcode`|=\string"8000
+}
+
+% Probability theory
+\newcommand{\Expect}{\mathop{{}\mathrm{E}}}
+\newcommand{\Expectmore}{\operatorname{E}\expectarg}
+\newcommand{\covmore}{\operatorname{cov}\expectarg}
+\DeclarePairedDelimiterX{\expectarg}[1]{[}{]}{%
+  \ifnum\currentgrouptype=16 \else\begingroup\fi
+  \activatebar#1
+  \ifnum\currentgrouptype=16 \else\endgroup\fi
+}
+\newcommand{\Proba}{\mathrm{P}}
+\newcommand{\Var}{\mathop{{}\mathrm{V}}}
+
+% Stochastic processes
+\newcommand{\generaltime}{t \geqslant 0}
+\newcommand{\discretetime}{t = 1,\,2,\,\ldots}
+\newcommand{\conttime}{t \in \realline^{+}}
+\newcommand{\finiteconttime}[1]{0 \leqslant t \leqslant #1}
+\newcommand{\finitediscretetime}[1]{\running{t}{1}{#1}}
+
+\newcommand{\newprocess}[1]{
+	\ensuremath{
+		#1 = \left(#1 _t\right)_{\generaltime}
+	}
+}
+\newcommand{\newprocessd}[1]{
+	\ensuremath{
+		#1 = \left(#1 _t\right)_{\discretetime}
+	}
+}
+\newcommand{\newprocessfc}[2]{
+	\ensuremath{
+		#1 = \left(#1 _t\right)_{\finiteconttime{#2}}
+	}
+}
+
+\newcommand{\trajectory}[1]{\big\{#1_s,\,0\leqslant s \leqslant t\big\}}
+\newcommand{\firsttime}[1]{\ensuremath{\inf \{\generaltime: #1\}}}
+
+\newcommand{\filtration}[1]{\mathcal{#1}}
+\newcommand{\filtrationprocess}[2]{\filtration{#1}^{#2}}
+\newcommand{\filtrationflow}[1]{\newprocess{\filtration{F}}}
+
+\newcommand{\fbm}{B^H}
+
+\begin{document}
+
+
+\begin{center}
+    \begin{tabular}{|p{15.5cm}|}
+        \hline
+        \textbf{ФКН ВШЭ, 3 курс, 3 модуль}\\
+        \begin{center} \Large Задание 1. Основы теории случайных процессов
+        \end{center}\\
+        \textbf{Вероятностные модели и статистика случайных процессов, весна 2017}\\
+        \hline
+    \end{tabular}
+\end{center}
+
+Время выдачи задания: 22 января (воскресенье), 23:59.
+
+Срок сдачи: \textcolor{blue}{\bf 2 февраля (четверг), 23:59.}
+
+Среда для выполнения задания~-- PYTHON 2.x.
+
+\textbf{Инструкция по отправке:} 
+\begin{enumerate}
+\item Домашнее задание необходимо отправить
+до дедлайна на почту \href{mailto:hse.cs.stochastics@gmail.com}
+{hse.cs.stochastics@gmail.com}.
+\item В письме укажите тему 
+<<[ФКН ССП17] Задание 1, Фамилия Имя>>.
+\item Решения задач следует присылать единым файлом
+формата .pdf, набранным в \LaTeX. Допускается присылка
+последней задачи в виде отдельной ipython-тетрадки.
+\end{enumerate}
+
+\textbf{Оценивание и штрафы:} 
+\begin{enumerate}
+\item Каждая из задач имеет стоимость 2 балла, при этом
+за задачу можно получить 0, 1 или 2 балла.
+Максимально допустимая оценка за работу -- 14 баллов.
+\item Дедлайн жесткий. Сдавать задание после указанного
+срока сдачи нельзя.
+\item Задание выполняется самостоятельно.
+<<Похожие>> решения считаются плагиатом и все задействованные студенты (в том числе те, у кого списали) не могут получить за него больше 0 баллов (подробнее о плагиате см. на странице курса). Если вы нашли решение какого-то из заданий (или его часть) в открытом источнике, необходимо указать ссылку на этот источник в отдельном блоке в конце Вашей работы (скорее всего вы будете не единственным, кто это нашел, поэтому чтобы исключить подозрение в плагиате, необходима ссылка на источник).
+\end{enumerate}
+
+
+\newpage
+
+\section*{Необходимые теоретические сведения}
+
+\textbf{1.} Ковариационной функцией $R_X(t_1, t_2)$ случайного процесса
+$\newprocess{X}$ называется неслучайная функция
+\[
+R_X(t_1, t_2) = \mathrm{cov} (X_{t_1} - \Expect X_{t_1}) (X_{t_2} - \Expect X_{t_2}).
+\]
+Корреляционной функцией $r_X(t_1, t_2)$ случайного процесса $X$ 
+называется неслучайная функция 
+\[
+r_X(t_1, t_2) = \frac{R_X(t_1, t_2)}{\sqrt{\Var X_{t_1} \Var X_{t_2}}},
+\]
+где $\Var X_t = \Expect (X_t - \Expect X_t)^2$ -- функция дисперсии
+случайного процесса $X$.
+Взаимной ковариационной функцией $R_{XY}(t_1, t_2)$ пары 
+случайных процессов $\newprocess{X}$ и $\newprocess{Y}$
+называется неслучайная функция 
+\[
+R_{XY}(t_1, t_2) = \mathrm{cov} (X_{t_1} - \Expect X_{t_1}) (Y_{t_2} - \Expect Y_{t_2}).
+\]
+Взаимная корреляционная функция $r_{XY}(t_1, t_2)$ определяется
+аналогично равенству для $r_X(t_1, t_2)$ выше.
+
+\textbf{2.} Случайный процесс $\newprocess{X}$ называется процессом
+с независимыми приращениями, если для любых $t_0, t_1, \ldots, t_n$,
+таких, что $0 = t_0 < t_1 < \ldots < t_n$ случайные величины
+$X_1 - X_0, \ldots, X_{n} - X_{n-1}$ независимы в совокупности.
+
+\textbf{3.} Вектор $X = (X_1, \dots, X_n)$ называется
+гауссовским, если для любого набора коэффициентов
+$(\lambda_1, \dots, \lambda_n) \in \mathbb{R}^n$
+случайная величина $Y \stackrel{\text{def}}{=}
+\sum_{k=1}^n \lambda_k X_k$ имеет нормальное распределение. 
+
+\textbf{4.} Процесс $\newprocess{W}$ на $(\Omega, \mathcal{F}, \Proba)$
+называется винеровским (или броуновским движением), если 
+\begin{itemize}
+    \item $W_0 = 0 \,\,\, \Proba$-п.н.,
+    \item $W_t$ имеет независимые приращения $\forall t$,
+    \item $W_t - W_s \sim \mathcal{N}(0, t- s) \,\,\, \forall t > s \ge 0$.
+\end{itemize}
+
+
+\newpage
+
+
+\section*{Вариант 1}
+
+
+\begin{enumerate}
+
+\item Доказать, что данная функция может или не может
+являться ковариационной функцией случайного процесса:
+	\begin{enumerate}
+		\item $R_1(t, s) = \min\{t, s\} - ts$,
+		\item $R_2(t, s) = \min\{t, s\} - t(s + 1).$
+	\end{enumerate}
+
+\item Заданы случайные величины $v_1, v_2, u_1, u_2$ 
+такие, что $\Expect v_i = \Expect u_i = 0,$
+$\Expect v^2_i = 1, \Expect u^2_i = 4, i=1,2,$ 
+а нормированная корреляционная матрица системы 
+$(v_1, v_2, u_1, u_2)$ равна
+\[
+\begin{bmatrix}
+    1 & 0 & \frac{1}{2} & 0 \\
+    0 & 1 & 0 & -\frac{1}{2} \\
+    \frac{1}{2} & 0 & 1 & 0 \\
+    0 & -\frac{1}{2} & 0 & 1
+\end{bmatrix}.
+\]
+Для случайных процессов
+\begin{align*}
+X_t = v_1 \cos \omega_1 t + v_2 \sin \omega_1 t, \\
+Y_t = u_1 \cos \omega_2 t + u_2 \sin \omega_2 t
+\end{align*}
+найти взаимные корреляционные функции 
+$r_{XY}(t_1, t_2) = \mathrm{corr}(X_{t_1}, Y_{t_2})$
+и $r_{YX}(t_1, t_2) = \mathrm{corr}(Y_{t_1}, X_{t_2})$
+и вычислить их значения при $t_1 = 0, t_2 = 1.$
+
+\item Пусть $X = (X_1, \ldots, X_n)$ -- случайный вектор.
+Докажите эквивалентность следующих утверждений
+(в обе стороны):
+	\begin{enumerate}
+		\item характеристическая функция вектора $X$ допускает представление
+		\begin{equation*}
+	    \varphi_X(\mathbf{u}) = \exp\big\{
+	    	i \mathbf{u}^{\intercal} \mu - 
+	    		\frac 1 2 \mathbf{u}^{\intercal} \Sigma \mathbf{u} 
+	    	\big\},
+		\end{equation*}
+		где $\mu$ -- неслучайный вектор из $\mathbb{R}^n$,
+		а $\Sigma$ -- симметричная неотрицательно определенная неслучайная
+		матрица размера $n \times n$,
+
+		\item вектор $X$ допускает представление
+		\begin{equation*}
+		    X = \mu + AZ,
+		\end{equation*}
+		где $\mu$ -- неслучайный вектор из $\mathbb{R}^n$,
+		$A$ -- неслучайная матрица размера $n \times n$,
+		а $Z \in \mathbb{R}^n$ -- вектор, все координаты 
+		которого независимы в совокупности и имеют нормальное $\mathcal{N}(0, 1)$
+		распределение.
+	\end{enumerate}
+
+\item Пусть $\newprocess{B}$ -- винеровский процесс. Доказать,
+что следующие процессы также винеровские:
+\begin{enumerate}
+	\item $B_t^{(1)} = 
+	\begin{cases}
+		0, \quad & t = 0, \\
+		t B_{1/t}, \quad & t > 0.
+	\end{cases}$
+	\item $B_t^{(2)} = 
+	\sqrt{c} B_{t/c}, \qquad c = \mathrm{const} > 0$.
+\end{enumerate}
+
+\item $\xi_1, \ldots, \xi_n$ -- независимые показательные случайные величины.
+Подсчитать (по индукции) плотность распределения суммы
+$\xi_1 + \ldots + \xi_n$.
+
+\item Пусть $\newprocess{N}$ -- пуассоновский случайный
+процесс с параметром $\lambda$. Доказать, что случайный
+процесс $N_{t+1} - N_t$ является стационарным второго порядка
+процессом, т.е. что его математическое ожидание $\Expect N_t$
+не зависит от времени, а его ковариационная функция
+$R(t_1, t_2)$ зависит от $t_1$ и $t_2$ через их разность
+$\tau = t_1 - t_2$.
+
+\item Стандартное фрактальное броуновское движение $\newprocessfc{\fbm}{T}$
+на $[0,T]$ с параметром Хёрста $H \in (0,1)$~---
+это гауссовский процесс с~непрерывными траекториями такой, что
+\[
+\fbm_t = \frac{1}{\Gamma(H + \frac 1 2)}
+	\int\limits_{-\infty}^{0} [(t - s)^{H - \frac 1 2 } - (-s)^{H-\frac 1 2}] dB_s
+	+ \int\limits_{0}^{t} (t - s)^{H - \frac 1 2 } dB_s,
+\]
+где 
+$\Gamma(\alpha) = \int_0^{\infty} x^{\alpha - 1} e^{-x} dx$ -- гамма-функция Эйлера.
+Смоделируйте реализации фрактального броуновского
+движения с помощью вычисления стохастического интеграла
+по броуновскому движению. В качестве результата
+приведите:
+\begin{enumerate}
+	\item разностную схему, использовавшуюся для моделирования,
+	\item исходный код, использовавшийся для моделирования,
+	\item примеры траекторий фрактального броуновского движения
+	для различных значений параметра Херста $H \in (0, 1)$.
+\end{enumerate}
+
+
+\end{enumerate}
+
+
+\newpage 
+
+\section*{Вариант 2}
+
+
+\begin{enumerate}
+
+\item Доказать положительную определенность следующих функций:
+	\begin{enumerate}
+		\item $R_1(t, s) = 
+			\begin{cases}
+				1 - |t - s|, \quad & |t - s| < 1, \\
+				0, \quad & |t - s| >= 1.
+			\end{cases}$,
+		\item $R_2(t, s) = e^{- |t - s|}$.
+	\end{enumerate}
+
+\item Случайный процесс $\newprocess{X}$ имеет вид
+\[
+X_t = b \sin (\gamma t + \varphi),
+\]
+где $b, \gamma$ -- известные постоянные, а $\varphi$ -- 
+случайная величина с плотностью $f_{\varphi}(x)$. Исследовать
+процесс $X$ на стационарность в узком и широком смысле,
+а также на эргодичность по математическому ожиданию,
+если 
+	\begin{enumerate}
+		\item $f_{\varphi}(x) = \cos(x) \mathds{1}_{[0, 2 \pi]}(x)$,
+		\item $f_{\varphi}(x) = \frac{\pi}{2} \mathds{1}_{[0, 2 \pi]}(x)$.
+	\end{enumerate}
+
+\item Доказать эквивалентность следующих двух определений
+винеровского процесса (доказательство провести в обе стороны):
+	\begin{enumerate}
+		\item винеровский процесс -- это гауссовский
+		процесс $\newprocess{B}$ с математическим ожиданием
+		$\Expect B_t \equiv m(t) = 0$ и ковариационной
+		функцией $\Expect (B_s - \Expect B_s) (B_t - \Expect B_t)
+		\equiv R(s, t) = min\{s, t\}$,
+		\item винеровский процесс -- это случайный процесс $\newprocess{B}$ такой, что
+		\begin{itemize}
+    		\item $B_0 = 0$ п.н.,
+    		\item $B$ -- процесс с независимыми приращениями,
+    		\item $B_t - B_s \sim \mathcal{N}(0, t - s) \quad \forall t > s \geqslant 0$.
+		\end{itemize}
+	\end{enumerate}
+
+\item Пусть $\newprocess{B}$ -- винеровский процесс на $[0, t]$. Подсчитать 
+	\begin{enumerate}
+	    \item $\lim_{n \to \infty} \sum_{i=1}^n \left(W_{t_i} - W_{t_{i-1}}\right)^2$,
+	    \item $\lim_{n \to \infty} \sum_{i=1}^n \left|W_{t_i} - W_{t_{i-1}}\right|$.
+	\end{enumerate}
+
+\item Пусть $\newprocess{N}$ -- неоднородный пуассоновский
+процесс с интенсивностью $\lambda(t)$. Доказать, что 
+	\begin{enumerate}
+	    \item функция $\Lambda(t) = \int_{0}^t \lambda(s) \, ds$ имеет обратную,
+	    \item процесс $M_t = N_{\Lambda^{-1}(t)}$ является однородным пуассоновским процессом. 
+	\end{enumerate}
+
+\item Пользовательские запросы поступают на веб-сервис
+в соответствии с однородным пуассоновским потоком $\newprocess{N}$
+с интенсивностью $\lambda$. Сервис оснащен балансировщиком
+нагрузки, разделяющим запросы на $r$ подпотоков
+$\{X^i\}_{i = 1}^r$ ($N_t = \sum_{i=1}^r X^i_t$)
+таким образом, что каждый запрос из $N_t$ 
+относится к подпотоку $X^i_t$ с вероятностью
+$p_i, i=1, \ldots, r$ (независимо от других событий).
+Определить тип и параметры случайных процессов
+$\{X^i\}_{i = 1}^r$.
+
+\item Составной пуассоновский поток событий (или пакетный пуассоновский процесс)
+-- это случайный процесс $\newprocess{X}$ со скачками, которые появляются
+согласно пуассоновский потоку с заданной интенсивностью $\lambda$
+и являются случайными величинами с заданным распределением $G$,
+не зависящими от пуассоновского потока. Он может быть записан в виде:
+\[
+X_t = \sum\limits_{i = 1}^{N_t} D_i,
+\]
+где $X_t$ -- значение составного потока в момент $t$, $N_t$ -- 
+значение простого потока в момент $t$ (число появлений пакетов),
+и $D_i, i \geqslant 1$ -- последовательность независимых
+одинаково распределенных случайных величин, имеющих распределение $G$.
+Смоделируйте реализации этого процесса, если
+	\begin{enumerate}
+		\item $\lambda = \lambda(t) = 
+		2 + sin (t - 11\pi/16) + sin (2t - 3\pi/8)$,
+		\item $G(x)$ -- распределение Пуассона с параметром $\rho > 0$.
+	\end{enumerate}
+В качестве результата приведите:
+\begin{enumerate}
+	\item исходный код, использовавшийся для моделирования,
+	\item примеры траекторий составного пуассоновского потока
+	для различных значений параметра $\rho$.
+\end{enumerate}
+
+
+\end{enumerate}
+
+\end{document}
