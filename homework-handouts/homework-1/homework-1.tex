@@ -372,11 +372,13 @@ X_t = b \sin (\gamma t + \varphi),
 		\end{itemize}
 	\end{enumerate}
 
-\item Пусть $\newprocess{B}$ -- винеровский процесс на $[0, t]$. Подсчитать 
+\item Пусть $\newprocess{W}$ -- винеровский процесс на $[0, t]$. Подсчитать 
 	\begin{enumerate}
-	    \item $\lim_{n \to \infty} \sum_{i=1}^n \left(W_{t_i} - W_{t_{i-1}}\right)^2$,
-	    \item $\lim_{n \to \infty} \sum_{i=1}^n \left|W_{t_i} - W_{t_{i-1}}\right|$.
+	    \item $\lim_{n \to \infty} \sum_{i=1}^n \left(W_{t_i} - W_{t_{i-1}}\right)^2$
+	    \item $\lim_{n \to \infty} \sum_{i=1}^n \left|W_{t_i} - W_{t_{i-1}}\right|$,
 	\end{enumerate}
+	где разбиение отрезка $a = t_0 < t_1 < \dots < t_n = b$ измельчается с ростом $n$ так, что $\max(t_i - t_{i-1}) \to 0$, а сходимость понимается в смысле среднего квадратического.
+	
 
 \item Пусть $\newprocess{N}$ -- неоднородный пуассоновский
 процесс с интенсивностью $\lambda(t)$. Доказать, что 
