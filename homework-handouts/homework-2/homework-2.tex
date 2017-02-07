@@ -1,0 +1,479 @@
+% !TEX encoding = UTF-8 Unicode
+\documentclass[a4paper,14pt]{extreport}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage[T2A]{fontenc}
+\usepackage[intlimits]{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{indentfirst}
+\usepackage{fullpage}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage[english,russian]{babel}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\graphicspath{{Pictures/}}
+
+\linespread{1.33}                    % Полуторный интвервал (ГОСТ Р 7.0.11-2011, 5.3.6)
+% \Large
+
+
+% \renewcommand{\labelenumi}{(\alph{enumi})} % Use letters for enumerate
+% \DeclareMathOperator{\Sample}{Sample}
+\let\vaccent=\v % rename builtin command \v{} to \vaccent{}
+\usepackage{enumerate}
+\renewcommand{\v}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}} 
+% for vectors of Greek letters
+\newcommand{\uv}[1]{\ensuremath{\mathbf{\hat{#1}}}} % for unit vector
+\newcommand{\abs}[1]{\left| #1 \right|} % for absolute value
+\newcommand{\avg}[1]{\left< #1 \right>} % for average
+\let\underdot=\d % rename builtin command \d{} to \underdot{}
+\renewcommand{\d}[2]{\frac{d #1}{d #2}} % for derivatives
+\newcommand{\dd}[2]{\frac{d^2 #1}{d #2^2}} % for double derivatives
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} 
+% for partial derivatives
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}} 
+% for double partial derivatives
+\newcommand{\pdc}[3]{\left( \frac{\partial #1}{\partial #2}
+ \right)_{#3}} % for thermodynamic partial derivatives
+\newcommand{\ket}[1]{\left| #1 \right>} % for Dirac bras
+\newcommand{\bra}[1]{\left< #1 \right|} % for Dirac kets
+\newcommand{\braket}[2]{\left< #1 \vphantom{#2} \right|
+ \left. #2 \vphantom{#1} \right>} % for Dirac brackets
+\newcommand{\matrixel}[3]{\left< #1 \vphantom{#2#3} \right|
+ #2 \left| #3 \vphantom{#1#2} \right>} % for Dirac matrix elements
+\newcommand{\grad}[1]{\gv{\nabla} #1} % for gradient
+\let\divsymb=\div % rename builtin command \div to \divsymb
+\renewcommand{\div}[1]{\gv{\nabla} \cdot \v{#1}} % for divergence
+\newcommand{\curl}[1]{\gv{\nabla} \times \v{#1}} % for curl
+\let\baraccent=\= % rename builtin command \= to \baraccent
+\renewcommand{\=}[1]{\stackrel{#1}{=}} % for putting numbers above =
+\providecommand{\wave}[1]{\v{\tilde{#1}}}
+\providecommand{\fr}{\frac}
+\providecommand{\RR}{\mathbb{R}}
+\providecommand{\NN}{\mathbb{N}}
+\providecommand{\seq}{\subseteq}
+\providecommand{\e}{\varepsilon}
+
+% LaTeX internal stuff
+\newcommand{\innermid}{\nonscript\;\delimsize\vert\nonscript\;}
+\newcommand{\activatebar}{%
+  \begingroup\lccode`\~=`\|
+  \lowercase{\endgroup\let~}\innermid 
+  \mathcode`|=\string"8000
+}
+
+% Probability theory
+\newcommand{\Expect}{\mathop{{}\mathrm{E}}}
+\newcommand{\Expectmore}{\operatorname{E}\expectarg}
+\newcommand{\covmore}{\operatorname{cov}\expectarg}
+\DeclarePairedDelimiterX{\expectarg}[1]{[}{]}{%
+  \ifnum\currentgrouptype=16 \else\begingroup\fi
+  \activatebar#1
+  \ifnum\currentgrouptype=16 \else\endgroup\fi
+}
+\newcommand{\Proba}{\mathrm{P}}
+\newcommand{\Var}{\mathop{{}\mathrm{V}}}
+
+% Stochastic processes
+\newcommand{\generaltime}{t \geqslant 0}
+\newcommand{\discretetime}{t = 1,\,2,\,\ldots}
+\newcommand{\conttime}{t \in \realline^{+}}
+\newcommand{\finiteconttime}[1]{0 \leqslant t \leqslant #1}
+\newcommand{\finitediscretetime}[1]{\running{t}{1}{#1}}
+
+\newcommand{\newprocess}[1]{
+	\ensuremath{
+		#1 = \left(#1 _t\right)_{\generaltime}
+	}
+}
+\newcommand{\newprocessd}[1]{
+	\ensuremath{
+		#1 = \left(#1 _t\right)_{\discretetime}
+	}
+}
+\newcommand{\newprocessfc}[2]{
+	\ensuremath{
+		#1 = \left(#1 _t\right)_{\finiteconttime{#2}}
+	}
+}
+
+\newcommand{\trajectory}[1]{\big\{#1_s,\,0\leqslant s \leqslant t\big\}}
+\newcommand{\firsttime}[1]{\ensuremath{\inf \{\generaltime: #1\}}}
+
+\newcommand{\filtration}[1]{\mathcal{#1}}
+\newcommand{\filtrationprocess}[2]{\filtration{#1}^{#2}}
+\newcommand{\filtrationflow}[1]{\newprocess{\filtration{F}}}
+
+\newcommand{\fbm}{B^H}
+
+\begin{document}
+
+
+\begin{center}
+    \begin{tabular}{|p{15.5cm}|}
+        \hline
+        \textbf{ФКН ВШЭ, 3 курс, 3 модуль}\\
+        \begin{center} \Large Задание 2. Марковские цепи. Авторегрессионные
+        и условно-гауссовские модели временных рядов
+        \end{center}\\
+        \textbf{Вероятностные модели и статистика случайных процессов, весна 2017}\\
+        \hline
+    \end{tabular}
+\end{center}
+
+Время выдачи задания: 6 февраля (понедельник).
+
+Срок сдачи: \textcolor{blue}{\bf 20 февраля (понедельник), 23:59.}
+
+Среда для выполнения практического задания~-- PYTHON 2.x.
+
+\section*{Правила сдачи}
+
+\textbf{Инструкция по отправке:} 
+\begin{enumerate}
+\item Домашнее задание необходимо отправить
+до дедлайна на почту \href{mailto:hse.cs.stochastics@gmail.com}
+{hse.cs.stochastics@gmail.com}.
+\item В письме укажите тему 
+<<[ФКН ССП17] Задание 2, Фамилия Имя>>.
+\item Решения задач следует присылать единым файлом
+формата .pdf, набранным в \LaTeX. Допускается отправка
+последней задачи в виде отдельной ipython-тетрадки.
+\end{enumerate}
+
+\textbf{Оценивание и штрафы:} 
+\begin{enumerate}
+\item \textbf{Каждая из задач имеет стоимость 2 балла}, при этом
+за задачу можно получить 0, 1 или 2 балла.
+Максимально допустимая оценка за работу -- 10 баллов. 
+Баллы, набранные сверх максимальной оценки, 
+считаются бонусными и влияют на освобождение от задач на экзамене.
+\item Дедлайн жесткий. Сдавать задание после указанного
+срока сдачи нельзя.
+\item Задание выполняется самостоятельно.
+<<Похожие>> решения считаются плагиатом и все задействованные студенты (в том числе те, у кого списали) не могут получить за него больше 0 баллов (подробнее о плагиате см. на странице курса). Если вы нашли решение какого-то из заданий (или его часть) в открытом источнике, необходимо указать ссылку на этот источник в отдельном блоке в конце Вашей работы (скорее всего вы будете не единственным, кто это нашел, поэтому чтобы исключить подозрение в плагиате, необходима ссылка на источник).
+\end{enumerate}
+
+
+\newpage
+
+\section*{Необходимые теоретические сведения}
+
+\textbf{1.} Ковариационной функцией $R_X(t_1, t_2)$ случайного процесса
+$\newprocess{X}$ называется неслучайная функция
+\[
+R_X(t_1, t_2) = \mathrm{cov} (X_{t_1} - \Expect X_{t_1}) (X_{t_2} - \Expect X_{t_2}).
+\]
+Корреляционной функцией $r_X(t_1, t_2)$ случайного процесса $X$ 
+называется неслучайная функция 
+\[
+r_X(t_1, t_2) = \frac{R_X(t_1, t_2)}{\sqrt{\Var X_{t_1} \Var X_{t_2}}},
+\]
+где $\Var X_t = \Expect (X_t - \Expect X_t)^2$ -- функция дисперсии
+случайного процесса $X$.
+Взаимной ковариационной функцией $R_{XY}(t_1, t_2)$ пары 
+случайных процессов $\newprocess{X}$ и $\newprocess{Y}$
+называется неслучайная функция 
+\[
+R_{XY}(t_1, t_2) = \mathrm{cov} (X_{t_1} - \Expect X_{t_1}) (Y_{t_2} - \Expect Y_{t_2}).
+\]
+Взаимная корреляционная функция $r_{XY}(t_1, t_2)$ определяется
+аналогично равенству для $r_X(t_1, t_2)$ выше.
+
+\textbf{2.} Случайный процесс $\newprocess{X}$ называется процессом
+с независимыми приращениями, если для любых $t_0, t_1, \ldots, t_n$,
+таких, что $0 = t_0 < t_1 < \ldots < t_n$ случайные величины
+$X_1 - X_0, \ldots, X_{n} - X_{n-1}$ независимы в совокупности.
+
+\textbf{3.} Вектор $X = (X_1, \dots, X_n)$ называется
+гауссовским, если для любого набора коэффициентов
+$(\lambda_1, \dots, \lambda_n) \in \mathbb{R}^n$
+случайная величина $Y \stackrel{\text{def}}{=}
+\sum_{k=1}^n \lambda_k X_k$ имеет нормальное распределение. 
+
+\textbf{4.} Процесс $\newprocess{W}$ на $(\Omega, \mathcal{F}, \Proba)$
+называется винеровским (или броуновским движением), если 
+\begin{itemize}
+    \item $W_0 = 0 \,\,\, \Proba$-п.н.,
+    \item $W_t$ имеет независимые приращения $\forall t$,
+    \item $W_t - W_s \sim \mathcal{N}(0, t- s) \,\,\, \forall t > s \ge 0$.
+\end{itemize}
+
+
+процесс ARMA (p,q)
+уравнения Юла-Уолкера
+частичная автокорреляционная функция
+
+Модель ARMAX($p, q, r$) (autoregressive moving average with exogenous inputs) -- 
+это стохастическая модель временного ряда, в которой наблюдения $\newprocess{X}$
+задаются соотношением
+\[
+X_t = a_0 + \sum\limits_{i=1}^p a_i X_{t-i} 
+	+ \sum\limits_{i=1}^p b_i \varepsilon_{t-i} + \sigma \varepsilon_t
+	+ \sum\limits_{i=1}^r c_i u_{t-i},
+\]
+где имеются члены AR($p$), MA($q$), и
+$\newprocess{u}$ -- это некоторая заданная (возможно, случайная)
+последовательность.
+
+\newpage
+
+
+\section*{Вариант 1}
+
+
+\begin{enumerate}
+
+	\item Пусть $\xi_1, \xi_2, \ldots$ -- независимые одинаково
+	распределенные случайные величины, причем
+	\[
+	\Proba (\xi_t = 1) = p, \quad  \Proba (\xi_t = -1) = 1 - p.
+	\]
+	Проверить, являются ли цепями Маркова следующие последовательности
+	случайных величин:
+	\begin{enumerate}
+		\item $\eta_t = \xi_t \xi_{t + 1}$,
+		\item $\eta_t = \xi_1 \xi_2 \ldots \xi_t$.
+	\end{enumerate}
+	Для цепей Маркова найти вероятности перехода за один шаг.
+
+	\item Движение частицы по целым точкам отрезка $[0, N]$
+	описывается цепью Маркова с $N+1$ состояниями и вероятностями
+	перехода за один шаг $p_{00} = p_{NN} = 1$; $p_{i, i+1} = p, p_{i, i-1} = 1 - p = q$;
+	$i = 1, \ldots, N - 1$ (<<случайное блуждание с поглощающими
+	стенками>>). Пусть  $\xi_t$ -- положение частицы 
+	в момент $t$, и $\tau = \min \{t: \xi_t = N\}$~-- первый момент
+	времени частицей верхней стенки. Показать, что 
+	\[
+	m_k = \Expectmore {\tau | \xi_0 = k} = 
+	\begin{cases}
+		\frac{2pq}{(p - q)^2} 
+			\Big( \Big(\frac q p\Big)^N - \Big(\frac q p\Big)^k \Big) 
+			- \frac{N - k}{q - p}, & \mbox{если } p \neq q,\\
+			(N - k)(N + k), & \mbox{если } p = q.
+	\end{cases}
+	\]
+	\item Скачайте в интернете музыкальный midi файл, обучите марковскую цепь и сгенерируйте импровизацию
+	\item Для случайного процесса $\newprocessd{h}$, заданного выражением:
+	\begin{enumerate}
+		\item $h_t = \varepsilon_t - 1.3 \varepsilon_{t-1} + 0.4 \varepsilon_{t-2}$,
+		\item $h_t - h_{t-1} = \varepsilon_t - 1.3 \varepsilon_{t-1} + 0.3 \varepsilon_{t-2}$,
+	\end{enumerate}
+	где $\newprocess{\varepsilon}$ -- последовательность независимых
+	одинаково стандартно нормально распределенных случайных величин,
+	(1) записать эквивалентные представления с использованием оператора сдвига $L$,
+	(2) провести исследование на стационарность, 
+	(3) вычислить первые четыре автокорреляции $\rho_0, \rho_1, \rho_2, \rho_3$,
+	(4) вычислить дисперсию случайной величины $h_t$,
+	(5) определить тип процесса в терминах ARMA($p, q$),
+	(6) записать уравнения Юла-Уолкера,
+	(7) решить эти уравнения с определением коэффициентов автокорреляции $\rho_1, \rho_2$,
+	(8) получить частичную автокорреляционную функцию.
+
+	\item Рассматривается процесс ARMAX, заданный уравнением
+	\[
+	X_t - 1.5 X_{t-1} + 0.7 X_{t-2} = u_{t-1} + 0.5 u_{t-2} + 
+		\varepsilon_{t} - \varepsilon_{t-1} + 0.2 \varepsilon_{t-2},
+	\]
+	где $\newprocess{\varepsilon}$ -- процесс белого шума с дисперсией 0.25,
+	последовательность $\newprocess{u}$ -- случайная бинарная ($\pm 1$) последовательность.
+	\begin{enumerate}
+		\item Сгенерировать траекторию длины $N = 500$ указанного процесса;
+		\item Выписать функционал правдоподобия указанного процесса
+		и выражения для оценок максимального правдоподобия его параметров
+		в предположении, что известны порядки частей AR, MA и X процесса;
+		\item По сгенерированной выборке оценить параметры
+		процесса ARMAX в предположении, что полностью известна
+		модель (известны порядки частей AR, MA и X процесса).
+		\item Построить графики зависимости оценок параметров
+		процесса ARMAX (предполагается, что полностью известна
+		модель процесса) от объема использованной выборки.
+		Сходятся ли эти оценки к настоящим значениям?
+		\item Подогнать к сгенерированной траектории процесс
+		авторегрессии порядка $p = 4$. Использовать batch-оценку
+		параметров процесса авторегрессии. Сравнить передаточную
+		функцию (нарисовать передаточные функции на одном графике)
+		полученного фильтра авторегрессии с передаточной
+		функцией фильтра исходного процесса ARMAX.
+	\end{enumerate}
+
+	\item 
+	Доходность акций часто оценивают в процентах согласно следующей формуле.
+	Если $S_n$ -- цена закрытия акции в день $n, n \geqslant 1$, то ее доходность равна величине
+	$X_n = \frac{S_n - S_{n-1}}{S_n}$ (отношение прироста цены закрытия
+	за текущий день к цене предыдущего дня, daily returns in percent). 
+
+	Для моделирования временного ряда, соответствующего процентной
+	доходности некоторого фондового индекса, использовалось 1000 наблюдений,
+	к которым была подогнана GARCH-модель. Результатом подгонки являются уравнения:
+	\begin{align*}
+	X_n = 0.102 + h_n, 
+	\quad 
+	h_n = \sigma_n \varepsilon_n, \\
+	\sigma_n^2 = 0.146 + 0.1068 h_{n-1}^2 + 0.8212 \sigma_{n-1}^2.
+	\end{align*}
+	Здесь $X_n$ -- доходность в день $n$, $\newprocessd{\varepsilon}$ --
+	процесс гауссовского белого шума.
+
+	Доходность в день $n = 1000$ (2013-05-31) составляла
+	$X_{1000} = -1.354$, причем $\sigma^2_{1000} =  2.27$.
+	В день $n + 1 = 1001$ (2013-06-03)
+	наблюдаемая доходность составила $X_{1001} = -10.47$,
+	в то время как прогноз дисперсии в этот день составил $2.24$.
+
+	\begin{enumerate}
+	\item Записать формулу для подсчета $\sigma^2_{1001}$, 
+	подставить числовое значение, подсчитать результат;
+	\item Подсчитать распределение доходности $X_{1001}$;
+	\item Обосновать ожидаемость или невозможность наблюдений
+	фактической доходности $X_{1000} = -1.354$;
+	\item Используя приведенный пример, обосновать утверждение
+	о том, что GARCH является моделью с условной дисперсией;
+	\item Используя уравнения модели, охарактеризовать
+	{\em безусловную} дисперсию доходности.
+	\end{enumerate}
+
+	\item Вам выдан файл \texttt{aapl.txt}, содержащий
+	значения наблюдаемой доходности
+	$X_n = \frac{S_n - S_{n-1}}{S_n}$ акций компании Apple 
+	в период с по .
+
+	\begin{enumerate}
+	\item Записать формулу для правдоподобия условно-гауссовской модели
+	ARCH($p$);
+	\item Используя несколько различных значений $p$,
+	оценить параметры модели ARCH($p$),
+	прокомментировать качество оценки для различных $p$;
+	\item Определить, характеризуются ли данные кластерами волатильности
+	(volatility clustering), т.е. дает ли модель ARCH($p$) 
+	преимущества по сравнению с однородной моделью,
+	для которой $\sigma^2_n = \mathrm{const}$;
+	\item Для выбранного вами значения $p$ нарисовать график
+	волатильности $\sigma^2_n$;
+	\item Описать процедуру выбора оптимального значения $p$
+	с помощью какого-либо информационного критерия.
+	\end{enumerate}
+
+
+\end{enumerate}
+
+
+\newpage 
+
+\section*{Вариант 2}
+
+
+\begin{enumerate}
+
+	\item Пусть $\xi_1, \xi_2, \ldots$ -- независимые одинаково
+	распределенные случайные величины, причем
+	\[
+	\Proba (\xi_t = 1) = p, \quad \Proba (\xi_t = -1) = 1 - p = q.
+	\]
+	Положим $\eta_0 = 0, \eta_{t+1} = \eta_t + \xi_{t + 1}$. 
+	Выяснить, является ли последовательность $\eta_t$ цепью Маркова. 
+	Найти $\Proba(\eta_t = m), m = 0, 1, \ldots$
+
+	\item Движение частицы по целым точкам отрезка $[0, N]$
+	описывается цепью Маркова с $N+1$ состояниями и вероятностями
+	перехода за один шаг $p_{00} = p_{NN} = 1$; $p_{i, i+1} = p, p_{i, i-1} = 1 - p = q$;
+	$i = 1, \ldots, N - 1$ (<<случайное блуждание с поглощающими
+	стенками>>). Пусть  $\xi_t$ -- положение частицы 
+	в момент $t$, и $p_{ij}(t) = \Proba (\xi_t = j | \xi_0 = i)$.
+	Найти вероятности поглощения частицы в точках $0$ и $N$:
+	\[
+	\pi_k^{(0)} = \lim\limits_{t \to \infty} p_{k0}(t),
+	\qquad
+	\pi_k^{(N)} = \lim\limits_{t \to \infty} p_{kN}(t).
+	\]
+
+	\item Скачайте в интернете музыкальный midi файл, обучите марковскую цепь и сгенерируйте импровизацию
+	\item Для случайного процесса $\newprocessd{h}$, заданного выражением:
+	\begin{enumerate}
+		\item $h_t - 0.5 h_{t-1} = \varepsilon_t - 1.3 \varepsilon_{t-1} + 0.4 \varepsilon_{t-2}$,
+		\item $h_t - 1.5 h_{t-1} + 0.6 h_{t-2} = \varepsilon_t$,
+	\end{enumerate}
+	где $\newprocess{\varepsilon}$ -- последовательность независимых
+	одинаково стандартно нормально распределенных случайных величин,
+	(1) записать эквивалентные представления с использованием оператора сдвига $L$,
+	(2) провести исследование на стационарность, 
+	(3) вычислить первые четыре автокорреляции $\rho_0, \rho_1, \rho_2, \rho_3$,
+	(4) вычислить дисперсию случайной величины $h_t$,
+	(5) определить тип процесса в терминах ARMA($p, q$),
+	(6) записать уравнения Юла-Уолкера,
+	(7) решить эти уравнения с определением коэффициентов автокорреляции $\rho_1, \rho_2$,
+	(8) получить частичную автокорреляционную функцию.
+
+	\item использование ar(p) для моделирования сигнала речи (или еще чего-нить)
+	\item Доходность акций часто оценивают в процентах согласно следующей формуле.
+	Если $S_n$ -- цена закрытия акции в день $n, n \geqslant 1$, то ее доходность равна величине
+	$X_n = \frac{S_n - S_{n-1}}{S_n}$ (отношение прироста цены закрытия
+	за текущий день к цене предыдущего дня, daily returns in percent). 
+
+	Для моделирования временного ряда, соответствующего процентной
+	доходности некоторого фондового индекса, использовалось 1000 наблюдений,
+	к которым была подогнана GARCH-модель. Результатом подгонки являются уравнения:
+	\begin{align*}
+	X_n = 0.102 + h_n, 
+	\quad 
+	h_n = \sigma_n \varepsilon_n, \\
+	\sigma_n^2 = 0.146 + 0.1068 h_{n-1}^2 + 0.8212 \sigma_{n-1}^2.
+	\end{align*}
+	Здесь $X_n$ -- доходность в день $n$, $\newprocessd{\varepsilon}$ --
+	процесс гауссовского белого шума.
+
+	Доходность в день $n = 1000$ (2013-05-31) составляла
+	$X_{1000} = -1.354$, причем $\sigma^2_{1000} =  2.27$.
+	В день $n + 1 = 1001$ (2013-06-03)
+	наблюдаемая доходность составила $X_{1001} = -10.47$,
+	в то время как прогноз дисперсии в этот день составил $2.24$.
+
+	\begin{enumerate}
+	\item Записать формулу для подсчета $\sigma^2_{1001}$, 
+	подставить числовое значение, подсчитать результат;
+	\item Подсчитать распределение доходности $X_{1001}$;
+	\item Обосновать ожидаемость или невозможность наблюдений
+	фактической доходности $X_{1000} = -1.354$;
+	\item Используя приведенный пример, обосновать утверждение
+	о том, что GARCH является моделью с условной дисперсией;
+	\item Используя уравнения модели, охарактеризовать
+	{\em безусловную} дисперсию доходности.
+	\end{enumerate}
+
+
+	\item Вам выдан файл \texttt{goog.txt}, содержащий
+	значения наблюдаемой доходности
+	$X_n = \frac{S_n - S_{n-1}}{S_n}$ акций компании Google 
+	в период с по .
+
+	\begin{enumerate}
+	\item Записать формулу для правдоподобия условно-гауссовской модели
+	GARCH($p, q$);
+	\item Используя несколько различных значений $p$ и $q$,
+	оценить параметры модели GARCH($p, q$),
+	прокомментировать качество оценки для различных $p$ и $q$;
+	\item Определить, характеризуются ли данные кластерами волатильности
+	(volatility clustering), т.е. дает ли модель GARCH($p, q$) 
+	преимущества по сравнению с однородной моделью,
+	для которой $\sigma^2_n = \mathrm{const}$;
+	\item Для выбранных вами значений $p,q$ нарисовать график
+	волатильности $\sigma^2_n$;
+	\item Описать процедуру выбора оптимального значения параметров $p$ и $q$
+	с помощью какого-либо информационного критерия.
+	\end{enumerate} 
+
+
+\end{enumerate}
+
+\end{document}
